@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2026/1/27 10:39:57                           */
+/* Created on:     2026/1/27 15:33:34                           */
 /*==============================================================*/
 
 
@@ -26,7 +26,7 @@ create table class
    classno              varchar(40) not null,
    classname            varchar(40),
    year                 year(4),
-   flag                 int comment '0锛氭甯革紝1锛氬凡鍒犻櫎',
+   flag                 int comment '0：正常，1：已删除',
    createtime           datetime,
    updatetime           datetime,
    primary key (classno)
@@ -50,7 +50,7 @@ create table grade
    politics             decimal(5,2),
    history              decimal(5,2),
    geography            decimal(5,2),
-   flag                 int comment '0锛氭甯革紝1锛氬凡鍒犻櫎',
+   flag                 int comment '0：正常，1：已删除',
    createtime           datetime,
    updatetime           datetime,
    primary key (id)
@@ -63,15 +63,16 @@ create table operator
 (
    operatorid           varchar(32) not null,
    operatorname         varchar(32),
-   operatorsex          varchar(4),
-   operatorage          int comment '鍙湁锛氱敺銆佸コ',
-   responsibility       varchar(32),
+   operatorsex          varchar(4) comment '只有：男(M)、女(F)',
+   operatorbirthdate    date,
+   responsibility       varchar(32) comment 'G：管理员，T：老师',
    operatortel          varchar(32),
    operatormail         varchar(128),
    idnumber             varchar(128),
    createtime           datetime,
    updatetime           datetime,
-   flag                 int comment '0锛氭甯革紝1锛氬凡鍒犻櫎',
+   flag                 int comment '0：正常，1：已删除',
+   isdel                varchar(4) comment 'Y：可被删除，N：不可被删除',
    primary key (operatorid)
 );
 
@@ -106,7 +107,8 @@ create table permission
    permissionname       varchar(32),
    createtime           datetime,
    updatetime           datetime,
-   flag                 int comment '0锛氭甯革紝1锛氬凡鍒犻櫎',
+   flag                 int comment '0：正常，1：已删除',
+   permissiondes        text,
    primary key (permissionid)
 );
 
@@ -118,12 +120,15 @@ create table student
    id                   varchar(32) not null,
    stuno                varchar(20) not null,
    name                 varchar(20),
-   sex                  varchar(4) comment '鍙湁锛氱敺銆佸コ',
-   age                  int,
+   sex                  varchar(4) comment '只有：男(M)、女(F)',
+   birthdate            date,
+   nation               varchar(4),
+   stunum               varchar(32),
    height               varchar(16),
    weight               varchar(16),
    telephone            varchar(32),
-   flag                 int comment '0锛氭甯革紝1锛氬凡鍒犻櫎',
+   flag                 int comment '0：正常，1：已删除',
+   stucontent           text,
    createtime           datetime,
    updatetime           datetime,
    primary key (id, stuno)
