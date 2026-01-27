@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS student (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    stuno VARCHAR(100),
+    stuname VARCHAR(100),
+    username VARCHAR(100),
+    PASSWORD VARCHAR(100),
+    res VARCHAR(100),
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP, -- 创建时间，不自动更新
+    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- 最后更新时间，自动更新
+);
+
+
+
+CREATE TABLE example (
+    id INT PRIMARY KEY,
+    created_time DATETIME DEFAULT CURRENT_TIMESTAMP, -- 创建时间，不自动更新
+    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- 最后更新时间，自动更新
+);
