@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries>
+    <query id="findOperator">
+        <description>根据name和id动态查询操作员</description>
+        <sql><![CDATA[
+            SELECT * FROM operator 
+            WHERE 1=1 
+            {{if name}}
+                AND name = #{name}
+            {{/if}}
+            {{if id}}
+                AND id = #{id}
+            {{/if}}
+        ]]></sql>
+    </query>
+</queries>
