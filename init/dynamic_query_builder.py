@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
-import pymysql
-from init.mysql_connection import create_connection, execute_query, close_connection
+
 
 
 class DynamicQueryBuilder:

@@ -5,24 +5,24 @@ from init.mysql_connection import create_connection, execute_query, close_connec
 
 
 def main():
-    # 创建XML配置文件
-    xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
-<queries>
-    <query id="findOperator">
-        <description>根据name和id动态查询操作员</description>
-        <sql><![CDATA[
-            SELECT * FROM operator 
-            WHERE 1=1 
-            {{if name}}
-                AND name = #{name}
-            {{/if}}
-            {{if id}}
-                AND id = #{id}
-            {{/if}}
-        ]]></sql>
-    </query>
-</queries>
-'''
+#     # 创建XML配置文件
+#     xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
+# <queries>
+#     <query id="findOperator">
+#         <description>根据name和id动态查询操作员</description>
+#         <sql><![CDATA[
+#             SELECT * FROM operator
+#             WHERE 1=1
+#             {{if name}}
+#                 AND name = #{name}
+#             {{/if}}
+#             {{if id}}
+#                 AND id = #{id}
+#             {{/if}}
+#         ]]></sql>
+#     </query>
+# </queries>
+# '''
     with open('query_config.xml', 'w', encoding='utf-8') as f:
         f.write(xml_content)
 
