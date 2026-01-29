@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import mysql.connector
-import config
-from mysql.connector import Error
 import pymysql
+from mysql.connector import Error
 
 from init.analysis import PropertiesReader
 from init.route import Route
+
+
 def read_config():
     try:
         # 獲取配置文件路徑，获取配置信息
