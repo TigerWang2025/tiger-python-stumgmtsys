@@ -9,7 +9,7 @@ from init.route import Route
 def read_config():
     try:
         # 獲取配置文件路徑，获取配置信息
-        config_file_path = Route.get_config_path(filename='config.properties')
+        config_file_path = Route.get_config_path(dirname='config', filename='config.properties')
         # print("配置文件config.properties的路徑：", config_file_path)
         # 创建配置解析器对象
         config_reader = PropertiesReader(config_file_path)

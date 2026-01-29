@@ -1,4 +1,4 @@
-coding: utf-8
+# -*- coding: utf-8 -*-
 import configparser
 import os
 from init.route import Route
@@ -55,10 +55,10 @@ def init_database_connection():
         return None
 
 
-if __name__ == "__main__":
-    # 测试配置读取功能
-    config_info = init_database_connection()
-    if config_info:
-        print("数据库初始化配置完成")
-    else:
-        print("数据库初始化配置失败")
+# if __name__ == "__main__":
+#     # 测试配置读取功能
+#     config_info = init_database_connection()
+#     if config_info:
+#         print("数据库初始化配置完成")
+#     else:
+#         print("数据库初始化配置失败")
