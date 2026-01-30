@@ -45,17 +45,17 @@ class DynamicQueryBuilder:
             values.append(params['name'])
         else:
             query = self._remove_condition_block(query, 'name')
-            # # 如果name为空，移除name条件块及其后的AND
-            # start = query.find('{{if name}}')
-            # end = query.find('{{/if}}')
-            # if start != -1 and end != -1:
-            #     # 找到完整的条件块位置
-            #     condition_start = query.find('AND', start)
-            #     if condition_start != -1:
-            #         # 移除整个条件块，包括AND和后面的条件
-            #         query = query[:start] + query[end+7:]
-            #     else:
-            #         query = query[:start] + query[end+7:]
+            # 如果name为空，移除name条件块及其后的AND
+            start = query.find('{{if name}}')
+            end = query.find('{{/if}}')
+            if start != -1 and end != -1:
+                # 找到完整的条件块位置
+                condition_start = query.find('AND', start)
+                if condition_start != -1:
+                    # 移除整个条件块，包括AND和后面的条件
+                    query = query[:start] + query[end+7:]
+                else:
+                    query = query[:start] + query[end+7:]
 
         # 处理id参数
         if 'id' in params and params['id']:
@@ -66,37 +66,29 @@ class DynamicQueryBuilder:
         else:
             # 如果id为空，移除id条件块及其后的AND
             query = self._remove_condition_block(query, 'id')
-            # # 如果id为空，移除id条件块及其后的AND
-            # start = query.find('{{if id}}')
-            # end = query.find('{{/if}}')
-            # if start != -1 and end != -1:
-            #     # 找到完整的条件块位置
-            #     condition_start = query.find('AND', start)
-            #     if condition_start != -1:
-            #         # 移除整个条件块，包括AND和后面的条件
-            #         query = query[:start] + query[end+7:]
-            #     else:
-            #         query = query[:start] + query[end+7:]
+            # 如果id为空，移除id条件块及其后的AND
+            start = query.find('{{if id}}')
+            end = query.find('{{/if}}')
+            if start != -1 and end != -1:
+                # 找到完整的条件块位置
+                condition_start = query.find('AND', start)
+                if condition_start != -1:
+                    # 移除整个条件块，包括AND和后面的条件
+                    query = query[:start] + query[end+7:]
+                else:
+                    query = query[:start] + query[end+7:]
 
         # # 清理多余的模板标记
-        # query = query.replace('{{if name}}', '').replace('{{/if}}', '')
-        # query = query.replace('{{if id}}', '').replace('{{/if}}', '')
-        #
-        # # return query.strip(), values
-        # # 移除多余的#{name}和#{id}占位符（防止未被条件包含的情况）
-        query = query.replace('#{name}', '')
-        print("query1:", query)
-        query = query.replace('#{id}', '')
-        print("query2:", query)
-        # 清理多余空白行
-        lines = [line for line in query.split('\n') if line.strip()]
-        cleaned_query = '\n'.join(lines)
-        # cleaned_query.strip()
+        query = query.replace('{{if name}}', '').replace('{{/if}}', '')
+        query = query.replace('{{if id}}', '').replace('{{/if}}', '')
 
+        # return query.strip(), values
+        # 移除多余的#{name}和#{id}占位符（防止未被条件包含的情况）
+        query = query.replace('#{name}', '')
+        query = query.replace('#{id}', '')
         # 清理多余空白行
         lines = [line for line in query.split('\n') if line.strip()]
         cleaned_query = '\n'.join(lines)
-        # cleaned_query.strip()
         return cleaned_query.strip(), values
 
     def _remove_condition_block(self, query, param_name):
