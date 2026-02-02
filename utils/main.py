@@ -2,46 +2,25 @@
 import os
 import pymysql
 
+from init.mysql_connection import create_connection
 from init.route import Route
 from init.xml_parser import DynamicQueryBuilder
 from query_executor import QueryExecutor
 
-
-def get_database_connection():
-    """获取数据库连接"""
-    db_config = {
-        'host': '127.0.0.1',
-        'port': 3306,
-        'user': 'root',
-        'password': '123456',
-        'database': 'student',
-        'charset': 'utf8mb4'
-    }
-
-    try:
-        connection = pymysql.connect(**db_config)
-        print("数据库连接成功")
-        return connection
-    except Exception as e:
-        print(f"数据库连接失败: {e}")
-        return None
-
-
 def main():
     """主函数 - 演示动态SQL查询的完整流程"""
+    # 获取数据库连接
+    connection = create_connection()
+    if not connection:
+        return
+
     # 获取XML文件路径
-    # current_dir = os.path.dirname(os.path.abspath(__file__))
-    # xml_file_path = os.path.join(current_dir, 'operatorQuery.xml')
     xml_file_path = Route.get_config_path(dirname='dbscript', filename='operatorQuery.xml')
+    print("数据库SQL脚本文件路径：", xml_file_path)
 
     # 检查XML文件是否存在
     if not os.path.exists(xml_file_path):
         print(f"XML配置文件不存在: {xml_file_path}")
-        return
-
-    # 获取数据库连接
-    connection = get_database_connection()
-    if not connection:
         return
 
     try:
