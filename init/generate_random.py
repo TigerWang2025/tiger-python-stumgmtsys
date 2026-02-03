@@ -10,7 +10,3 @@ def generate_random_alphanumeric(length=32):
     # 随机选择字符并连接成字符串
     random_string = ''.join(random.choice(characters) for _ in range(length))
     return random_string
-
-# 生成32位随机数
-random_result = generate_random_alphanumeric(32)
-print("suijis:", random_result)

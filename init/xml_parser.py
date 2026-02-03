@@ -2,6 +2,7 @@
 import xml.etree.ElementTree as ET
 import os
 import re
+from typing import Dict, Any, Tuple, List
 
 
 class DynamicQueryBuilder:
@@ -19,7 +20,7 @@ class DynamicQueryBuilder:
             for query_elem in root.findall('query'):
                 query_id = query_elem.get('id')
                 sql_elem = query_elem.find('sql')
-                if query_id and sql_elem is not None:
+                if query_id and sql_elem is not None and sql_elem.text:
                     self.queries[query_id] = sql_elem.text.strip()
         except Exception as e:
             print(f"解析XML文件时出错: {e}")
@@ -45,17 +46,6 @@ class DynamicQueryBuilder:
             values.append(params['name'])
         else:
             query = self._remove_condition_block(query, 'name')
-            # # 如果name为空，移除name条件块及其后的AND
-            # start = query.find('{{if name}}')
-            # end = query.find('{{/if}}')
-            # if start != -1 and end != -1:
-            #     # 找到完整的条件块位置
-            #     condition_start = query.find('AND', start)
-            #     if condition_start != -1:
-            #         # 移除整个条件块，包括AND和后面的条件
-            #         query = query[:start] + query[end+7:]
-            #     else:
-            #         query = query[:start] + query[end+7:]
 
         # 处理id参数
         if 'id' in params and params['id']:
@@ -66,17 +56,6 @@ class DynamicQueryBuilder:
         else:
             # 如果id为空，移除id条件块及其后的AND
             query = self._remove_condition_block(query, 'id')
-            # # 如果id为空，移除id条件块及其后的AND
-            # start = query.find('{{if id}}')
-            # end = query.find('{{/if}}')
-            # if start != -1 and end != -1:
-            #     # 找到完整的条件块位置
-            #     condition_start = query.find('AND', start)
-            #     if condition_start != -1:
-            #         # 移除整个条件块，包括AND和后面的条件
-            #         query = query[:start] + query[end+7:]
-            #     else:
-            #         query = query[:start] + query[end+7:]
 
         # # 清理多余的模板标记
         query = query.replace('{{if name}}', '').replace('{{/if}}', '')
@@ -108,3 +87,55 @@ class DynamicQueryBuilder:
         query = re.sub(r'\s*{{if\s+\w+}}\s*', '', query)
         query = re.sub(r'\s*{{/if}}\s*', '', query)
         return query
+
+    def process_insert_template(self, query_id: str, params: Dict[str, Any]) -> Tuple[str, List[Any]]:
+        """
+                处理插入模板，根据参数动态生成SQL
+                :param query_id: 查询ID
+                :param params: 参数字典
+                :return: (SQL语句, 参数值列表)
+                """
+        template = self.queries.get(query_id)
+        if not template:
+            raise ValueError(f"未找到ID为'{query_id}'的查询模板")
+
+        processed_sql = template
+        values = []
+
+        # 处理所有if-else条件
+        if_else_patterns = [
+            ('operatorid', 'operatorid'),
+            ('operatorname', 'operatorname'),
+            ('operatorsex', 'operatorsex'),
+            ('operatorbirthdate', 'operatorbirthdate'),
+            ('responsibility', 'responsibility'),
+            ('operatortel', 'operatortel'),
+            ('operatormail', 'operatormail'),
+            ('idnumber', 'idnumber'),
+            ('createtime', 'createtime'),
+            ('updatetime', 'updatetime'),
+            ('flag', 'flag'),
+            ('isdel', 'isdel')
+        ]
+
+        for field, param_key in if_else_patterns:
+            pattern = rf'{{{{if {field}.*?}}}}(#{{{field}}}.*?){{{{else}}}}(.*?){{{{/if}}}}'
+            matches = re.finditer(pattern, processed_sql, re.DOTALL)
+
+            for match in matches:
+                full_match = match.group(0)
+                true_part = match.group(1)
+                false_part = match.group(2)
+
+                if params.get(param_key) is not None:
+                    replacement = true_part.replace(f'#{{{field}}}', '%s')
+                    values.append(params[param_key])
+                else:
+                    replacement = false_part
+
+                processed_sql = processed_sql.replace(full_match, replacement)
+
+        # 清理剩余的模板标记
+        processed_sql = re.sub(r'{{if .*?}}|{{else}}|{{/if}}', '', processed_sql)
+
+        return processed_sql.strip(), values

@@ -13,4 +13,74 @@
             {{/if}}
         ]]></sql>
     </query>
+
+    <query id="insertOperator">
+        <description>动态插入操作员信息，支持各字段为空判断</description>
+        <sql><![CDATA[
+            INSERT INTO operator (
+                operatorid,
+                operatorname,
+                operatorsex,
+                operatorbirthdate,
+                responsibility,
+                operatortel,
+                operatormail,
+                idnumber,
+                createtime,
+                updatetime,
+                flag,
+                isdel
+            ) VALUES (
+                {{if operatorid}}#{operatorid}{{else}}NULL{{/if}},
+                {{if operatorname}}#{operatorname}{{else}}NULL{{/if}},
+                {{if operatorsex}}#{operatorsex}{{else}}NULL{{/if}},
+                {{if operatorbirthdate}}#{operatorbirthdate}{{else}}NULL{{/if}},
+                {{if responsibility}}#{responsibility}{{else}}NULL{{/if}},
+                {{if operatortel}}#{operatortel}{{else}}NULL{{/if}},
+                {{if operatormail}}#{operatormail}{{else}}NULL{{/if}},
+                {{if idnumber}}#{idnumber}{{else}}NULL{{/if}},
+                {{if createtime}}#{createtime}{{else}}NOW(){{/if}},
+                {{if updatetime}}#{updatetime}{{else}}NOW(){{/if}},
+                {{if flag != null}}#{flag}{{else}}0{{/if}},
+                {{if isdel != null}}#{isdel}{{else}}0{{/if}}
+            )
+        ]]></sql>
+    </query>
+
+    <query id="batchInsertOperator">
+        <description>批量插入操作员信息</description>
+        <sql><![CDATA[
+            INSERT INTO operator (
+                operatorid,
+                operatorname,
+                operatorsex,
+                operatorbirthdate,
+                responsibility,
+                operatortel,
+                operatormail,
+                idnumber,
+                createtime,
+                updatetime,
+                flag,
+                isdel
+            ) VALUES
+            {{foreach item in operators}}
+                (
+                    {{if item.operatorid}}#{item.operatorid}{{else}}NULL{{/if}},
+                    {{if item.operatorname}}#{item.operatorname}{{else}}NULL{{/if}},
+                    {{if item.operatorsex}}#{item.operatorsex}{{else}}NULL{{/if}},
+                    {{if item.operatorbirthdate}}#{item.operatorbirthdate}{{else}}NULL{{/if}},
+                    {{if item.responsibility}}#{item.responsibility}{{else}}NULL{{/if}},
+                    {{if item.operatortel}}#{item.operatortel}{{else}}NULL{{/if}},
+                    {{if item.operatormail}}#{item.operatormail}{{else}}NULL{{/if}},
+                    {{if item.idnumber}}#{item.idnumber}{{else}}NULL{{/if}},
+                    {{if item.createtime}}#{item.createtime}{{else}}NOW(){{/if}},
+                    {{if item.updatetime}}#{item.updatetime}{{else}}NOW(){{/if}},
+                    {{if item.flag != null}}#{item.flag}{{else}}0{{/if}},
+                    {{if item.isdel != null}}#{item.isdel}{{else}}0{{/if}}
+                )
+                {{if !foreach.last}},{{/if}}
+            {{/foreach}}
+        ]]></sql>
+    </query>
 </queries>
